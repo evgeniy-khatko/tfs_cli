@@ -115,7 +115,7 @@ Try -h option for more."
             string project,
             [RequiredAttribute, DescriptionAttribute("TFS testplan name to get tests from")]
             string testplan,
-            [AliasesAttribute("rc"), DescriptionAttribute("Run configuration"), DefaultValue("tfs_cli")]
+            [AliasesAttribute("rconf"), DescriptionAttribute("Run configuration"), DefaultValue("tfs_cli")]
             string run_config,
             [AliasesAttribute("rd"), RequiredAttribute, DescriptionAttribute("Run duration")]
             string duration,
