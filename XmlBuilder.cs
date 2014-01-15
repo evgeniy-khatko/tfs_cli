@@ -31,7 +31,9 @@ namespace tfs_cli
                 new XElement("is_automated", test.IsAutomated),
                 new XElement("area", test.Area)
                 );
+            IEnumerator iterator = test.Actions.GetEnumerator();
             foreach(ITestAction action in test.Actions){
+                iterator.MoveNext();
                 XElement a = new XElement("action");
                 a.Add(
                     new XAttribute("id", action.Id),

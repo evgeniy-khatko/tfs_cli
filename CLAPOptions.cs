@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Configuration;
 using System.Threading.Tasks;
 using CLAP;
 using CLAP.Validation;
@@ -13,7 +14,14 @@ namespace tfs_cli
         private static CLAPOptions _instance;
         private static IDictionary<string, string> _opts = new Dictionary<string, string>();
         private static string _verb;
-
+        private static Configuration configManager = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+        private KeyValueConfigurationCollection _appconf;
+        
+        private CLAPOptions()
+        {
+            _appconf = configManager.AppSettings.Settings;
+            //_appconf["YourKey"].Value = "YourNewKey";
+        }
        
         public static CLAPOptions getOptions()
         {
@@ -39,22 +47,7 @@ namespace tfs_cli
         {
             return _verb;
         }
-        /*
-        [Global(Description = "TFS collection url, e.g. 'https://my.visualstudio.com/DefaultCollection'")]
-        static void url(string value){
-            _opts["url"] = value;
-        }
 
-        [Global(Description = "TFS project name to get tests from")]
-        static void project(string value){
-            _opts["project"] = value;
-        }
-        [Global(Description = "TFS testplan name to get tests from")]
-        static void testplan(string value)
-        {
-            _opts["testplan"] = value;
-        }
-        */
         [Global(Aliases = "lgn", Description = "TFS user login")]
         static void login(string value)
         {
@@ -87,34 +80,22 @@ Try -h option for more."
         }
 
         [Verb(Aliases = "get", 
-            Description = "Exports TFS tests from provided project and testplan.\nExample: 'g -url=\"https://ekhatko.visualstudio.com/DefaultCollection\" -p=\"cmd\" -t=\"\"bestplan\"\" -lgn=\"evgeniy.khatko@gmail.com\" -pwd=\"Qwerty14\"'"
+            Description = "Exports TFS tests from provided project and testplan. Please fill App.config file beforehand\nUsage: tfs_cli get"
             )]
         static void get_tests(
-            [RequiredAttribute, DescriptionAttribute("TFS collection url, e.g. 'https://my.visualstudio.com/DefaultCollection")]
-            string url,
-            [RequiredAttribute, DescriptionAttribute("TFS project name to get tests from")]
-            string project,
-            [RequiredAttribute, DescriptionAttribute("TFS testplan name to get tests from")]
-            string testplan,
             [DefaultValue("tests.xml"), DescriptionAttribute("Filename for tests export")]
             string output
             )
         {
             _verb = "get_tests";
-            _opts["url"] = url;
-            _opts["project"] = project;
-            _opts["testplan"] = testplan;
+            _opts["url"] = _instance._appconf["url"].Value;
+            _opts["project"] = _instance._appconf["project"].Value; ;
+            _opts["testplan"] = _instance._appconf["testplan"].Value; ;
             _opts["output"] = output;
         }
 
-        [Verb(Aliases = "upd", Description = "Updates TFS test with provided attributes.\nExample: ''")]
+        [Verb(Aliases = "upd", Description = "Updates TFS test with provided attributes. Please fill App.config file beforehand\nUsage: ''")]
         static void update_test(
-            [RequiredAttribute, DescriptionAttribute("TFS collection url, e.g. 'https://my.visualstudio.com/DefaultCollection")]
-            string url,
-            [RequiredAttribute, DescriptionAttribute("TFS project name to get tests from")]
-            string project,
-            [RequiredAttribute, DescriptionAttribute("TFS testplan name to get tests from")]
-            string testplan,
             [AliasesAttribute("rconf"), DescriptionAttribute("Run configuration"), DefaultValue("tfs_cli")]
             string run_config,
             [AliasesAttribute("rd"), RequiredAttribute, DescriptionAttribute("Run duration")]
@@ -144,9 +125,9 @@ Try -h option for more."
             )
         {
             _verb = "update_test";
-            _opts["url"] = url;
-            _opts["project"] = project;
-            _opts["testplan"] = testplan;
+            _opts["url"] = _instance._appconf["url"].Value;
+            _opts["project"] = _instance._appconf["project"].Value; ;
+            _opts["testplan"] = _instance._appconf["testplan"].Value; ;
             _opts["run_config"] = run_config;
             _opts["duration"] = duration;
             _opts["run_title"] = run_title;
