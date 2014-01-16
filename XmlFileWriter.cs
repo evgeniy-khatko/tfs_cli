@@ -18,15 +18,17 @@ namespace tfs_cli
             builder.Header(opts);
             
             // get helper
-            TfsApi tfsapi = new FirstTfsApi(tfs);
+            ITfsApi tfsapi = new FirstTfsApi(tfs);
 
             // get testplan
             ITestManagementTeamProject project = tfsapi.GetProject(opts.Get("project"));
             ITestPlan testplan = tfsapi.GetTestPlan(project, opts.Get("testplan"));
-            foreach(ITestCase test in testplan.RootSuite.AllTestCases){
-                builder.Append(test);
-            }
             
+            // TODO
+            List<ITestSuiteBase> suites = tfsapi.GetTestSuites(testplan);
+            foreach(ITestSuiteBase suite in suites){
+                builder.Append(suite);
+            }
             // create file for output
             StreamWriter output;
             try

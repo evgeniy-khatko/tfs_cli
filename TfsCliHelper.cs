@@ -12,6 +12,6 @@ namespace tfs_cli
         {
             Console.WriteLine(message);
             Environment.Exit(1);
-        }
+        }        
     }
 }

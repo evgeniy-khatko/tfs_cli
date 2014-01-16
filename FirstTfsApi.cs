@@ -8,7 +8,7 @@ using Microsoft.TeamFoundation.TestManagement.Client;
 
 namespace tfs_cli
 {
-    class FirstTfsApi : TfsApi
+    class FirstTfsApi : ITfsApi
     {
         private TfsTeamProjectCollection _tfs;
 
@@ -93,6 +93,24 @@ namespace tfs_cli
             result.State = TestResultState.Completed;        
             result.Save(false);
             return string.Format("Test {0} was updated with {1} through test run {2} (id)", result.TestCaseTitle, outcome, result.TestRunId);
+        }
+
+        List<ITestSuiteBase> GetSuites(ITestPlan plan) 
+        {
+            List<ITestSuiteBase> res = new List<ITestSuiteBase>();
+            GetSuitesRecursive(plan.RootSuite, res);
+            return res;
+        }
+
+        private GetSuitesRecursive(IStaticTestSuite suite, List<ITestSuiteBase> res){
+            foreach(ITestSuiteEntry entry in (IStaticTestSuite)suite.Entries)
+            {
+                if(entry.EntryType == TestSuiteEntryType.StaticTestSuite){}
+                else if(entry.EntryType == TestSuiteEntryType.DynamicTestSuite)
+                {
+                    TfsCliHelper.ExitWithError(string.Format("Testplan {0} has dynamic test suite {1}. Dynamic suites are not supported.", suite.Plan.Name, suite.Title));
+                }
+            }
         }
 
         private ITestRun SaveRun(ITestPlan plan, string title, string buildNum)

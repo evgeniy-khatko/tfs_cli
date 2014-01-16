@@ -141,5 +141,15 @@ Try -h option for more."
             _opts["test_error_message"] = test_error_message;
             _opts["test_attachment"] = test_attachment;
         }
+
+        [Verb(Aliases = "enc", Description = "Encrypts provided string to be used in App.config\nUsage: tfs_cli enc <password>")]
+        static void encrypt(
+            [RequiredAttribute, DescriptionAttribute("Password to be encrypted")]
+            string password
+            )
+        {
+            _verb = "encrypt";
+            System.Console.WriteLine(StringEncriptor.Encrypt(password));
+        }
     }
 }

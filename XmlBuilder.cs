@@ -18,7 +18,39 @@ namespace tfs_cli
         {
             return _root.ToString();
         }
-        public void Append(ITestCase test) {
+
+        public XElement DocRoot()
+        {
+            return _root;
+        }
+
+        public void Append(ITestSuiteBase suite)
+        {
+            XElement xmlsuite = new XElement(
+                "testsuite",
+                new XElement("id", suite.Id),
+                new XElement("title", suite.Title),
+                new XElement("description", suite.Description),
+                new XElement("state", suite.State),
+                new XElement("type", suite.TestSuiteType),
+                new XElement("user_data", suite.UserData)
+                );
+            foreach (ITestCase test in suite.TestCases)
+            {
+                Append(test, xmlsuite);
+            }
+        }
+
+        public void Header(ITfsCliOptions opts) {
+            _root.Add(
+                new XAttribute("url", opts.Get("url")), 
+                new XAttribute("project", opts.Get("project")), 
+                new XAttribute("testplan", opts.Get("testplan"))
+                );
+        }
+
+        private void Append(ITestCase test, XElement root)
+        {
             XElement xmltest = new XElement(
                 "test",
                 new XElement("id", test.Id),
@@ -27,13 +59,12 @@ namespace tfs_cli
                 new XElement("state", test.State),
                 new XElement("priority", test.Priority),
                 new XElement("owner", test.OwnerName),
-                new XElement("reason", test.Reason),                
+                new XElement("reason", test.Reason),
                 new XElement("is_automated", test.IsAutomated),
                 new XElement("area", test.Area)
                 );
-            IEnumerator iterator = test.Actions.GetEnumerator();
-            foreach(ITestAction action in test.Actions){
-                iterator.MoveNext();
+            foreach (ITestAction action in test.Actions)
+            {
                 XElement a = new XElement("action");
                 a.Add(
                     new XAttribute("id", action.Id),
@@ -41,22 +72,15 @@ namespace tfs_cli
                     );
                 xmltest.Add(a);
             }
-            IEnumerator custom = test.CustomFields.GetEnumerator();
             /*
+            IEnumerator custom = test.CustomFields.GetEnumerator();            
             while (custom.MoveNext())
             {
                 xmltest.Add("custom", custom.Current.ToString());
             }
             */
             // add this staff to root
-            _root.Add(xmltest);
-        }
-        public void Header(ITfsCliOptions opts) {
-            _root.Add(
-                new XAttribute("url", opts.Get("url")), 
-                new XAttribute("project", opts.Get("project")), 
-                new XAttribute("testplan", opts.Get("testplan"))
-                );
+            root.Add(xmltest);
         }
     }
 }

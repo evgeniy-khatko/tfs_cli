@@ -13,7 +13,7 @@ namespace tfs_cli
         public string UpdateTest(TfsTeamProjectCollection tfs, ITfsCliOptions opts)
         {
             // get tfs helper
-            TfsApi tfsapi = new FirstTfsApi(tfs);
+            ITfsApi tfsapi = new FirstTfsApi(tfs);
             // get testplan
             ITestManagementTeamProject project = tfsapi.GetProject(opts.Get("project"));
             ITestPlan testplan = tfsapi.GetTestPlan(project, opts.Get("testplan"));

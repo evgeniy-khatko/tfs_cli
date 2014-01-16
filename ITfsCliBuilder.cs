@@ -10,7 +10,7 @@ namespace tfs_cli
     interface ITfsCliBuilder
     {
         string Finalize();
-        void Append(ITestCase test);
+        void Append(ITestSuiteBase suite);
         void Header(ITfsCliOptions opts);
     }
 }
