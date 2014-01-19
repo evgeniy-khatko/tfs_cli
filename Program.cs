@@ -38,15 +38,10 @@ namespace tfs_cli
                     {
                         updater.UpdateTest(connector.GetTfs(), options);
                     }
-                    else
-                    {
-                        Console.WriteLine("Provided verb: {0} not recognized", options.ProvidedVerb());
-                        Environment.Exit(1);
-                    }
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Runtime error occured: {0}", e.Message);
+                    Console.WriteLine("Runtime error occured: {0}\n{1}", e.Message, e.StackTrace);
                 }
             }
             else { Console.WriteLine("Could not connect to TFS. Check provided data and Internet connection."); }

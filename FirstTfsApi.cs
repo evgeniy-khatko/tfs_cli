@@ -31,7 +31,7 @@ namespace tfs_cli
 
         public ITestPlan GetTestPlan(ITestManagementTeamProject project, string testplan_name)
         {            
-            string query = string.Format("SELECT * FROM TestPlan WHERE PlanName = {0}", testplan_name);
+            string query = string.Format("SELECT * FROM TestPlan WHERE PlanName = \"{0}\"", testplan_name);
             ITestPlanCollection plans = project.TestPlans.Query(query);
             if (plans.Count == 0)
                 TfsCliHelper.ExitWithError(string.Format("TestPlan {0} not found in project {1}", testplan_name, project.TeamProjectName));
@@ -57,9 +57,9 @@ namespace tfs_cli
             return configuration;
         }
 
-        public ITestRun CreateRun(ITestPlan plan, string title, string comment, string buildNum, string attach)
+        public ITestRun CreateRun(ITestPlan plan, ITestSuiteBase suite, string title, string comment, string buildNum, string attach)
         {
-            ITestRun tfsRun = SaveRun(plan, title, buildNum);
+            ITestRun tfsRun = SaveRun(plan, suite, title, buildNum);
             tfsRun.Comment = comment;
             if (attach != null)
             {
@@ -86,7 +86,7 @@ namespace tfs_cli
             result.DateStarted = DateTime.Now;
             result.Duration = new TimeSpan(10000000 * (int.Parse(duration)));
             result.DateCompleted = DateTime.Now.AddTicks(result.Duration.Ticks);
-            result.FailureType = (FailureType)Enum.Parse(typeof(FailureType), outcome);            
+            result.FailureType = (FailureType)Enum.Parse(typeof(FailureType), failure_type);            
             result.ErrorMessage = error_message;            
             var iteration = CreateIteration(result, outcome, comment, duration, attach);
             result.Iterations.Add(iteration);
@@ -95,25 +95,46 @@ namespace tfs_cli
             return string.Format("Test {0} was updated with {1} through test run {2} (id)", result.TestCaseTitle, outcome, result.TestRunId);
         }
 
-        List<ITestSuiteBase> GetSuites(ITestPlan plan) 
+        public List<ITestSuiteBase> GetSuites(ITestPlan plan) 
         {
             List<ITestSuiteBase> res = new List<ITestSuiteBase>();
+            if (plan.RootSuite.TestCases.Count > 0)
+            {
+                res.Add(plan.RootSuite);
+            }            
             GetSuitesRecursive(plan.RootSuite, res);
             return res;
         }
 
-        private GetSuitesRecursive(IStaticTestSuite suite, List<ITestSuiteBase> res){
-            foreach(ITestSuiteEntry entry in (IStaticTestSuite)suite.Entries)
+        public ITestSuiteBase GetSuite(string name, ITestPlan plan)
+        {
+            foreach (ITestSuiteBase suite in GetSuites(plan)) {
+                if (suite.Title == name)
+                    return suite;
+            }
+            return null;
+        }
+
+        private void GetSuitesRecursive(IStaticTestSuite suite, List<ITestSuiteBase> res){
+            foreach(ITestSuiteEntry entry in suite.Entries)
             {
-                if(entry.EntryType == TestSuiteEntryType.StaticTestSuite){}
+                if(entry.EntryType == TestSuiteEntryType.StaticTestSuite)
+                {
+                    if (entry.TestSuite.AllTestCases.Count > 0)
+                    {
+                        res.Add(entry.TestSuite);
+                        GetSuitesRecursive((IStaticTestSuite)entry.TestSuite, res);
+                    }                    
+                }
                 else if(entry.EntryType == TestSuiteEntryType.DynamicTestSuite)
                 {
                     TfsCliHelper.ExitWithError(string.Format("Testplan {0} has dynamic test suite {1}. Dynamic suites are not supported.", suite.Plan.Name, suite.Title));
                 }
             }
+            return;
         }
 
-        private ITestRun SaveRun(ITestPlan plan, string title, string buildNum)
+        private ITestRun SaveRun(ITestPlan plan, ITestSuiteBase suite, string title, string buildNum)
         {
             ITestRun tfsRun = plan.CreateTestRun(false);
             tfsRun.DateStarted = DateTime.Now;
@@ -122,7 +143,7 @@ namespace tfs_cli
             tfsRun.BuildNumber = buildNum;
             tfsRun.Owner = _tfs.AuthorizedIdentity;
             // Add testpoints to testrun
-            tfsRun.AddTestPoints(plan.QueryTestPoints(string.Format("SELECT * FROM TestPoint WHERE SuiteId = {0}", plan.RootSuite)), _tfs.AuthorizedIdentity);
+            tfsRun.AddTestPoints(plan.QueryTestPoints(string.Format("SELECT * FROM TestPoint WHERE SuiteId = {0}", suite.Id)), _tfs.AuthorizedIdentity);
             // save test run
             tfsRun.Save();
             return tfsRun;

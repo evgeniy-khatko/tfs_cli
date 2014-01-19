@@ -15,16 +15,27 @@ namespace tfs_cli
         private static IDictionary<string, string> _opts = new Dictionary<string, string>();
         private static string _verb;
         private static Configuration configManager = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-        private KeyValueConfigurationCollection _appconf;
-        
-        private CLAPOptions()
-        {
-            _appconf = configManager.AppSettings.Settings;
-            //_appconf["YourKey"].Value = "YourNewKey";
-        }
+        private static KeyValueConfigurationCollection _appconf = configManager.AppSettings.Settings;
        
         public static CLAPOptions getOptions()
         {
+            try
+            {
+                _opts["url"] = _appconf["url"].Value;
+                _opts["project"] = _appconf["project"].Value;
+                _opts["testplan"] = _appconf["testplan"].Value;
+                _opts["login"] = _appconf["login"].Value;
+                _opts["password"] = StringEncriptor.Decrypt(_appconf["password"].Value);
+                _opts["domen"] = (_appconf.AllKeys.Contains("domen")) ? _appconf["domen"].Value : null;
+            }
+            catch (Exception e)
+            {
+                TfsCliHelper.ExitWithError(string.Format(
+                    "Set correct parameters in the config file. Make sure you encrypt your password with tfs_cli enc <pwd>\n{0}\n{1}",
+                    e.Message,
+                    e.StackTrace
+            ));
+            }
             if (_instance == null)
             {
                 _instance = new CLAPOptions();
@@ -48,22 +59,6 @@ namespace tfs_cli
             return _verb;
         }
 
-        [Global(Aliases = "lgn", Description = "TFS user login")]
-        static void login(string value)
-        {
-            _opts["login"] = value;
-        }
-        [Global(Aliases = "pwd", Description = "TFS user password")]
-        static void password(string value)
-        {
-            _opts["password"] = value;
-        }
-        [Global(Aliases = "dmn", Description = "TFS user domen")]
-        static void domen(string value)
-        {
-            _opts["domen"] = value;
-        }
-
         [Empty]
         static void NoInput()
         {
@@ -80,7 +75,7 @@ Try -h option for more."
         }
 
         [Verb(Aliases = "get", 
-            Description = "Exports TFS tests from provided project and testplan. Please fill App.config file beforehand\nUsage: tfs_cli get"
+            Description = "Exports TFS tests from provided project and testplan. Please fill config file beforehand\nExample usage: tfs_cli get"
             )]
         static void get_tests(
             [DefaultValue("tests.xml"), DescriptionAttribute("Filename for tests export")]
@@ -88,13 +83,10 @@ Try -h option for more."
             )
         {
             _verb = "get_tests";
-            _opts["url"] = _instance._appconf["url"].Value;
-            _opts["project"] = _instance._appconf["project"].Value; ;
-            _opts["testplan"] = _instance._appconf["testplan"].Value; ;
             _opts["output"] = output;
         }
 
-        [Verb(Aliases = "upd", Description = "Updates TFS test with provided attributes. Please fill App.config file beforehand\nUsage: ''")]
+        [Verb(Aliases = "upd", Description = "Updates TFS test with provided attributes. Please fill config file beforehand\nExample usage: tfs_cli.exe u /rt=\"my test run\" /ts=\"testsuite\" /tn=\"test name\" /to=Passed /duration=1")]
         static void update_test(
             [AliasesAttribute("rconf"), DescriptionAttribute("Run configuration"), DefaultValue("tfs_cli")]
             string run_config,
@@ -109,13 +101,15 @@ Try -h option for more."
             [AliasesAttribute("ra"), DescriptionAttribute("Run attachment. E.g. overall run report")]
             [FileExists]
             string run_attachment,
+            [RequiredAttribute, AliasesAttribute("ts"), DescriptionAttribute("Test suite name")]
+            string test_suite_name,
             [RequiredAttribute, AliasesAttribute("tn"), DescriptionAttribute("Test name")]
             string test_name,
             [RequiredAttribute, AliasesAttribute("to"), DescriptionAttribute("Test outcome (result). Available: Aborted, Blocked, Error, Failed, Inconclusive, None, NotApplicable, NotExecuted, Passed, Paused, Timeout, Unspecified, Warning")]
             string test_outcome,            
             [AliasesAttribute("tc"), DescriptionAttribute("Test comment"), DefaultValue("tfs_cli test run")]
             string test_comment,
-            [AliasesAttribute("tft"), DescriptionAttribute("Test failure type. Available: KnowIssue, NewIssue, None, Regression, Unknown")]
+            [AliasesAttribute("tft"), DescriptionAttribute("Test failure type. Available: KnowIssue, NewIssue, None, Regression, Unknown"), DefaultValue("None")]
             string test_failure_type,
             [AliasesAttribute("tem"), DescriptionAttribute("Test error message"), DefaultValue("")]
             string test_error_message,
@@ -125,9 +119,6 @@ Try -h option for more."
             )
         {
             _verb = "update_test";
-            _opts["url"] = _instance._appconf["url"].Value;
-            _opts["project"] = _instance._appconf["project"].Value; ;
-            _opts["testplan"] = _instance._appconf["testplan"].Value; ;
             _opts["run_config"] = run_config;
             _opts["duration"] = duration;
             _opts["run_title"] = run_title;
@@ -135,6 +126,7 @@ Try -h option for more."
             _opts["run_comment"] = run_comment;
             _opts["run_attachment"] = run_attachment;
             _opts["test_name"] = test_name;
+            _opts["test_suite_name"] = test_suite_name;
             _opts["test_outcome"] = test_outcome;
             _opts["test_failure_type"] = test_failure_type;
             _opts["test_comment"] = test_comment;
@@ -150,6 +142,7 @@ Try -h option for more."
         {
             _verb = "encrypt";
             System.Console.WriteLine(StringEncriptor.Encrypt(password));
+            System.Environment.Exit(0);
         }
     }
 }

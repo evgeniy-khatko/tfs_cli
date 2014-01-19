@@ -26,19 +26,20 @@ namespace tfs_cli
 
         public void Append(ITestSuiteBase suite)
         {
-            XElement xmlsuite = new XElement(
-                "testsuite",
-                new XElement("id", suite.Id),
-                new XElement("title", suite.Title),
-                new XElement("description", suite.Description),
-                new XElement("state", suite.State),
-                new XElement("type", suite.TestSuiteType),
-                new XElement("user_data", suite.UserData)
+            XElement xmlsuite = new XElement("testsuite");
+            xmlsuite.Add(
+                new XAttribute("id", suite.Id),
+                new XAttribute("title", suite.Title),
+                new XAttribute("description", suite.Description ?? ""),
+                new XAttribute("state", suite.State),
+                new XAttribute("type", suite.TestSuiteType),
+                new XAttribute("user_data", suite.UserData ?? "")
                 );
-            foreach (ITestCase test in suite.TestCases)
+            foreach (ITestSuiteEntry entry in suite.TestCases)
             {
-                Append(test, xmlsuite);
+                Append(entry.TestCase, xmlsuite);
             }
+            _root.Add(xmlsuite);
         }
 
         public void Header(ITfsCliOptions opts) {
@@ -51,17 +52,17 @@ namespace tfs_cli
 
         private void Append(ITestCase test, XElement root)
         {
-            XElement xmltest = new XElement(
-                "test",
-                new XElement("id", test.Id),
-                new XElement("title", test.Title),
-                new XElement("description", test.Description),
-                new XElement("state", test.State),
-                new XElement("priority", test.Priority),
-                new XElement("owner", test.OwnerName),
-                new XElement("reason", test.Reason),
-                new XElement("is_automated", test.IsAutomated),
-                new XElement("area", test.Area)
+            XElement xmltest = new XElement("test");
+            xmltest.Add(
+                new XAttribute("id", test.Id),
+                new XAttribute("title", test.Title),
+                new XAttribute("description", test.Description ?? ""),
+                new XAttribute("state", test.State),
+                new XAttribute("priority", test.Priority),
+                new XAttribute("owner", test.OwnerName),
+                new XAttribute("reason", test.Reason),
+                new XAttribute("is_automated", test.IsAutomated),
+                new XAttribute("area", test.Area ?? "")
                 );
             foreach (ITestAction action in test.Actions)
             {

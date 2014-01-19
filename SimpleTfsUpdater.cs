@@ -17,21 +17,31 @@ namespace tfs_cli
             // get testplan
             ITestManagementTeamProject project = tfsapi.GetProject(opts.Get("project"));
             ITestPlan testplan = tfsapi.GetTestPlan(project, opts.Get("testplan"));
+            // get testsuite
+            string suitename = (opts.Get("test_suite_name") == null) ? opts.Get("testplan") : opts.Get("test_suite_name");
+            ITestSuiteBase testsuite = tfsapi.GetSuite(suitename, testplan);
+            if (testsuite == null)
+                TfsCliHelper.ExitWithError(string.Format(
+                    "Test suite {0} not found in testplan {1}",
+                    suitename,
+                    testplan.Name
+                    ));
             // get configuration
-            ITestConfiguration config = tfsapi.GetTestConfiguration(project, opts.Get("config"));
+            ITestConfiguration config = tfsapi.GetTestConfiguration(project, opts.Get("run_config"));
             // create test run
             // add test points to test run
             // save test run
             ITestRun run = tfsapi.CreateRun(
-                testplan, 
+                testplan,
+                testsuite,
                 opts.Get("run_title"), 
                 opts.Get("run_comment"), 
                 opts.Get("run_build_number"), 
                 opts.Get("run_attachment")
                 );
             // find test to update
-            ITestCaseResult result = null;
-            ITestCaseCollection tests = testplan.RootSuite.AllTestCases;
+            ITestCaseResult result = null;            
+            ITestCaseCollection tests = testsuite.AllTestCases;
             for (int i = 0; i < tests.Count; i++)
             {
                 if (tests[i].Title == opts.Get("test_name"))

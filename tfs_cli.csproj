@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FirstTfsApi.cs" />
+    <Compile Include="ITfsApi.cs" />
     <Compile Include="StringEncriptor.cs" />
     <Compile Include="TfsCliHelper.cs" />
     <Compile Include="ITfsCliBuilder.cs" />
@@ -83,7 +84,6 @@
     <Compile Include="SimpleTfsUpdater.cs" />
     <Compile Include="ITfsCliUpdater.cs" />
     <Compile Include="ITfsCliWriter.cs" />
-    <Compile Include="TfsApi.cs" />
     <Compile Include="XmlBuilder.cs" />
     <Compile Include="XmlFileWriter.cs" />
   </ItemGroup>

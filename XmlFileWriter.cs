@@ -25,7 +25,7 @@ namespace tfs_cli
             ITestPlan testplan = tfsapi.GetTestPlan(project, opts.Get("testplan"));
             
             // TODO
-            List<ITestSuiteBase> suites = tfsapi.GetTestSuites(testplan);
+            List<ITestSuiteBase> suites = tfsapi.GetSuites(testplan);
             foreach(ITestSuiteBase suite in suites){
                 builder.Append(suite);
             }
