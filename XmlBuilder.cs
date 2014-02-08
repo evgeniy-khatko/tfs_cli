@@ -67,9 +67,12 @@ namespace tfs_cli
             foreach (ITestAction action in test.Actions)
             {
                 XElement a = new XElement("action");
+                ITestStep step = (ITestStep)action;
+                
                 a.Add(
                     new XAttribute("id", action.Id),
-                    new XAttribute("string", action.ToString())
+                    new XAttribute("action", step.Title),
+                    new XAttribute("expected_result", step.ExpectedResult)
                     );
                 xmltest.Add(a);
             }
