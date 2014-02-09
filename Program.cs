@@ -16,7 +16,7 @@ namespace tfs_cli
             // Init provided options
             Parser.RunConsole<CLAPOptions>(args);
             var options = CLAPOptions.getOptions();
-            if (options.GetAll().Count == 0) { Environment.Exit(1); }
+            if (options.GetAll().Count == 0) { Environment.Exit(1); } // need tests here
                       
             // Try to connect first
             var cred = (options.Get("login") != null && options.Get("password") != null) ?
@@ -37,6 +37,10 @@ namespace tfs_cli
                     else if (options.ProvidedVerb() == "update_test")
                     {
                         updater.UpdateTest(connector.GetTfs(), options);
+                    }
+                    else if (options.ProvidedVerb() == "update_from_junit")
+                    {
+                        updater.UpdateFromJunit(connector.GetTfs(), options);
                     }
                 }
                 catch (Exception e)

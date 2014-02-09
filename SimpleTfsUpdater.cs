@@ -12,7 +12,7 @@ namespace tfs_cli
     {
         public string UpdateTest(TfsTeamProjectCollection tfs, ITfsCliOptions opts)
         {
-            // get tfs helper
+            // get tfs api helper
             ITfsApi tfsapi = new FirstTfsApi(tfs);
             // get testplan
             ITestManagementTeamProject project = tfsapi.GetProject(opts.Get("project"));
@@ -48,7 +48,7 @@ namespace tfs_cli
                     result = run.QueryResults()[i];
             }
             if (result == null)
-                TfsCliHelper.ExitWithError(string.Format("Could not find testcase {0} inside testplan {1}", opts.Get("test_name"), testplan.Name));
+                TfsCliHelper.ExitWithError(string.Format("Could not find testcase {0} inside testsuite {1}", opts.Get("test_name"), testsuite.Title));
             // update test reults
             // create and populate test iteration
             // save test results
@@ -61,6 +61,11 @@ namespace tfs_cli
                 opts.Get("test_error_message"),
                 opts.Get("test_attachment")
                 );
-        }       
+        }  
+     
+        public string UpdateFromJunit(TfsTeamProjectCollection tfs, ITfsCliOptions opts)
+        {
+            return "TODO";
+        }
     }
 }

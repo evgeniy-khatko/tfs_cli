@@ -10,5 +10,6 @@ namespace tfs_cli
     interface ITfsCliUpdater
     {
         string UpdateTest(TfsTeamProjectCollection tfs, ITfsCliOptions opts);
+        string UpdateFromJunit(TfsTeamProjectCollection tfs, ITfsCliOptions opts);
     }
 }

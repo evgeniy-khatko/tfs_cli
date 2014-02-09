@@ -63,8 +63,8 @@ namespace tfs_cli
         static void NoInput()
         {
             Console.WriteLine(
-@"This is command line utility to get tests from TFS or to update results of tests inside TFS.
-Try -h option for more."
+                @"This is command line utility to get tests from TFS or to update results of tests inside TFS.
+                Try -h option for more."
             );            
         }
 
@@ -77,13 +77,17 @@ Try -h option for more."
         [Verb(Aliases = "get", 
             Description = "Exports TFS tests from provided project and testplan. Please fill config file beforehand\nExample usage: tfs_cli get"
             )]
-        static void get_tests(
+        static void get_tests(            
             [DefaultValue("tests.xml"), DescriptionAttribute("Filename for tests export")]
-            string output
+            string output,
+            [AliasesAttribute("tp"), DefaultValue(""), DescriptionAttribute("Testplan to get tests from (overrides .config option)")]
+            string testplan
             )
         {
             _verb = "get_tests";
             _opts["output"] = output;
+            if (testplan != "")
+                _opts["testplan"] = testplan;
         }
 
         [Verb(Aliases = "upd", Description = "Updates TFS test with provided attributes. Please fill config file beforehand\nExample usage: tfs_cli.exe u /rt=\"my test run\" /ts=\"testsuite\" /tn=\"test name\" /to=Passed /duration=1")]
@@ -101,7 +105,7 @@ Try -h option for more."
             [AliasesAttribute("ra"), DescriptionAttribute("Run attachment. E.g. overall run report")]
             [FileExists]
             string run_attachment,
-            [RequiredAttribute, AliasesAttribute("ts"), DescriptionAttribute("Test suite name")]
+            [AliasesAttribute("ts"), DescriptionAttribute("Test suite name")]
             string test_suite_name,
             [RequiredAttribute, AliasesAttribute("tn"), DescriptionAttribute("Test name")]
             string test_name,
@@ -115,7 +119,9 @@ Try -h option for more."
             string test_error_message,
             [AliasesAttribute("ta"), DescriptionAttribute("Test attachment. E.g. test run report")]
             [FileExists]
-            string test_attachment   
+            string test_attachment,
+            [AliasesAttribute("tp"), DefaultValue(""), DescriptionAttribute("Testplan to get tests from (overrides .config option)")]
+            string testplan
             )
         {
             _verb = "update_test";
@@ -132,6 +138,8 @@ Try -h option for more."
             _opts["test_comment"] = test_comment;
             _opts["test_error_message"] = test_error_message;
             _opts["test_attachment"] = test_attachment;
+            if (testplan != "")
+                _opts["testplan"] = testplan;
         }
 
         [Verb(Aliases = "enc", Description = "Encrypts provided string to be used in App.config\nUsage: tfs_cli enc <password>")]
