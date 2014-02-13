@@ -81,7 +81,7 @@
     <Compile Include="CLAPOptions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SimpleTfsUpdater.cs" />
+    <Compile Include="SingleTestUpdater.cs" />
     <Compile Include="ITfsCliUpdater.cs" />
     <Compile Include="ITfsCliWriter.cs" />
     <Compile Include="XmlBuilder.cs" />

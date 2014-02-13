@@ -23,8 +23,8 @@ namespace tfs_cli
             new NetworkCredential(options.Get("login"), options.Get("password"), options.Get("domen")) :
             null;
             var connector = new CredentialConnector(new Uri(options.Get("url")), cred);
-            var updater = new SimpleTfsUpdater();
-            var writer = new XmlFileWriter();
+            
+            
             if (connector.Connect())
             {
                 // Following depends on CommandLine verb    
@@ -32,15 +32,18 @@ namespace tfs_cli
                 {
                     if (options.ProvidedVerb() == "get_tests")
                     {
+                        var writer = new XmlFileWriter();
                         writer.CreateOutput(connector.GetTfs(), options, new XmlBuilder());
                     }
                     else if (options.ProvidedVerb() == "update_test")
                     {
-                        updater.UpdateTest(connector.GetTfs(), options);
+                        var updater = new SingleTestUpdater();
+                        updater.Update(connector.GetTfs(), options);
                     }
                     else if (options.ProvidedVerb() == "update_from_junit")
                     {
-                        updater.UpdateFromJunit(connector.GetTfs(), options);
+                        var updater = new CucumberJunitUpdater();
+                        updater.Update(connector.GetTfs(), options);
                     }
                 }
                 catch (Exception e)

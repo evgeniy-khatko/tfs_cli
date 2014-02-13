@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace tfs_cli
 {
-    class SimpleTfsUpdater : ITfsCliUpdater 
+    class SingleTestUpdater : ITfsCliUpdater 
     {
-        public string UpdateTest(TfsTeamProjectCollection tfs, ITfsCliOptions opts)
+        public string Update(TfsTeamProjectCollection tfs, ITfsCliOptions opts)
         {
             // get tfs api helper
             ITfsApi tfsapi = new FirstTfsApi(tfs);
@@ -61,11 +61,6 @@ namespace tfs_cli
                 opts.Get("test_error_message"),
                 opts.Get("test_attachment")
                 );
-        }  
-     
-        public string UpdateFromJunit(TfsTeamProjectCollection tfs, ITfsCliOptions opts)
-        {
-            return "TODO";
-        }
+        }        
     }
 }
