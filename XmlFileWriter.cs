@@ -1,45 +1,48 @@
-﻿using Microsoft.TeamFoundation.Client;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.TeamFoundation.TestManagement.Client;
 
 namespace tfs_cli
 {
-    class XmlFileWriter : ITfsCliWriter
+    class XmlFileWriter
     {
-        public void CreateOutput(TfsTeamProjectCollection tfs, ITfsCliOptions opts, ITfsCliBuilder builder) 
-        { 
-            // generate xml
-            // generate header
-            builder.Header(opts);
-            
-            // get helper
-            ITfsApi tfsapi = new FirstTfsApi(tfs);
+        private string _output;
+        private ITfsCliBuilder _builder;
+        private ConnectionData _conData;
 
-            // get testplan
-            ITestManagementTeamProject project = tfsapi.GetProject(opts.Get("project"));
-            ITestPlan testplan = tfsapi.GetTestPlan(project, opts.Get("testplan"));
+        public XmlFileWriter(string output, ConnectionData con, ITfsCliBuilder builder) 
+        {
+            _conData = con;
+            _output = output;
+            _builder = builder;
+        }
+
+        public void CreateOutput() 
+        {
+            ITfsCliConnector connector = new CredentialConnector(_conData);
+            connector.Connect();
+            // generate header
+            _builder.Header(_conData.Url(), _conData.Project(), _conData.Testplan());
+
+            TfsApi tfsapi = new TfsApi(connector.Collection(), _conData);
+            ITestPlan testplan = tfsapi.GetTestPlan();
             
-            // TODO
-            List<ITestSuiteBase> suites = tfsapi.GetSuites(testplan);
+            List<ITestSuiteBase> suites = tfsapi.GetSuites();
             foreach(ITestSuiteBase suite in suites){
-                builder.Append(suite);
+                _builder.Append(suite);
             }
             // create file for output
             StreamWriter output;
             try
             {
-                output = new StreamWriter(opts.Get("output"));
-                output.Write(builder.Finalize());
+                output = new StreamWriter(_output);
+                output.Write(_builder.Finalize());
                 output.Close();
             }
             catch (Exception)
             {
-                TfsCliHelper.ExitWithError(string.Format("Unable to write results to file: {0}", opts.Get("output")));
+                TfsCliHelper.ExitWithError(string.Format("Unable to write results to file: {0}", _output));
             }
         }        
     }

@@ -1,0 +1,2 @@
+tfs_cli.exe u /rt="my test run" /tn="plancase" /to=Passed /duration=1
+tfs_cli.exe j /r="Y:\Work\tfs_cli\tmp\TESTS-TestSuites.xml"

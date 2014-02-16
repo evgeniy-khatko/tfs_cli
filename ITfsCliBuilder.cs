@@ -11,6 +11,6 @@ namespace tfs_cli
     {
         string Finalize();
         void Append(ITestSuiteBase suite);
-        void Header(ITfsCliOptions opts);
+        void Header(string url, string project, string testplan);
     }
 }

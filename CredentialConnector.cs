@@ -11,22 +11,32 @@ namespace tfs_cli
     class CredentialConnector : ITfsCliConnector
     {
         private TfsTeamProjectCollection _tfs;
-        public CredentialConnector(Uri uri, ICredentials credentials)
+        private ConnectionData _connData;
+        public CredentialConnector(ConnectionData data)
         {
-            _tfs = new TfsTeamProjectCollection(uri, credentials);
+            _connData = data;
         }
 
-        public bool Connect()
+        public void Connect()
         {
             try
             {
+                // Try to connect first
+                var cred = (_connData.User() != null && _connData.Password() != null) ?
+                new NetworkCredential(_connData.User(), _connData.Password(), _connData.Domen()) :
+                null;
+             
+                _tfs = new TfsTeamProjectCollection(new Uri(_connData.Url()), cred);
                 _tfs.Authenticate();
-                return _tfs.HasAuthenticated;
+                if (!_tfs.HasAuthenticated)
+                {
+                    TfsCliHelper.ExitWithError("Could not authenticate to TFS");
+                }
             }
-            catch (Exception) { return false; }
+            catch (UriFormatException) { TfsCliHelper.ExitWithError("Invalid Url provided"); }
         }
 
-        public TfsTeamProjectCollection GetTfs()
+        public TfsTeamProjectCollection Collection()
         {
             return _tfs;
         }

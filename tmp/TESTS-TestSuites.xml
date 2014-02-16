@@ -1,25 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <testsuites>
-  <testsuite failures="1" id="0" name="JUnitFormatter" package="cucumber.runtime.formatter" skipped="0" tests="2" time="0.10496">
-    <testcase classname="проверка" name="сценарий1" time="0.104859">
-      <failure message="java.lang.AssertionError: expected:&lt;1&gt; but was:&lt;2&gt;&#xa;&#x9;at org.junit.Assert.fail(Assert.java:88)&#xa;&#x9;at org.junit.Assert.failNotEquals(Assert.java:743)&#xa;&#x9;at org.junit.Assert.assertEquals(Assert.java:118)&#xa;&#x9;at org.junit.Assert.assertEquals(Assert.java:555)&#xa;&#x9;at org.junit.Assert.assertEquals(Assert.java:542)&#xa;&#x9;at StepDefinitions.получить_результат(Unknown Source)&#xa;&#x9;at ✽.* получить результат(test/resources/first.feature:6)&#xa;"><![CDATA[* открыть страницу "hello"..................................................passed
-* получить результат........................................................failed
-
-StackTrace:
-java.lang.AssertionError: expected:<1> but was:<2>
-	at org.junit.Assert.fail(Assert.java:88)
-	at org.junit.Assert.failNotEquals(Assert.java:743)
-	at org.junit.Assert.assertEquals(Assert.java:118)
-	at org.junit.Assert.assertEquals(Assert.java:555)
-	at org.junit.Assert.assertEquals(Assert.java:542)
-	at StepDefinitions.получить_результат(Unknown Source)
-	at ✽.* получить результат(test/resources/first.feature:6)
-]]></failure>
-
-    </testcase>
-
-    <testcase classname="проверка" name="сценарий2" time="0.000101">
-      <system-out><![CDATA[* открыть страницу "hello"..................................................passed
+  <testsuite failures="0" id="0" name="JUnitFormatter" package="cucumber.runtime.formatter" skipped="0" tests="1" time="0.163528">
+    <testcase classname="secsuite" name="secsuitecase" time="0.163528">
+      <system-out><![CDATA[* open page "hello".........................................................passed
+* open page "hello".........................................................passed
+* open page "hello".........................................................passed
 ]]></system-out>
 
     </testcase>

@@ -9,7 +9,7 @@ namespace tfs_cli
 {
     interface ITfsCliConnector
     {
-        bool Connect();
-        TfsTeamProjectCollection GetTfs();
+        void Connect();
+        TfsTeamProjectCollection Collection();
     }
 }
