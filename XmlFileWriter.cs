@@ -1,38 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Microsoft.TeamFoundation.TestManagement.Client;
 
 namespace tfs_cli
 {
-    class XmlFileWriter
-    {
+    class XmlFileWriter : TestsWriter
+    {        
         private string _output;
         private ITfsCliBuilder _builder;
         private ConnectionData _conData;
-
-        public XmlFileWriter(string output, ConnectionData con, ITfsCliBuilder builder) 
-        {
-            _conData = con;
-            _output = output;
-            _builder = builder;
-        }
-
-        public void CreateOutput() 
-        {
-            ITfsCliConnector connector = new CredentialConnector(_conData);
-            connector.Connect();
-            // generate header
-            _builder.Header(_conData.Url(), _conData.Project(), _conData.Testplan());
-
-            TfsApi tfsapi = new TfsApi(connector.Collection(), _conData);
-            ITestPlan testplan = tfsapi.GetTestPlan();
-            
-            List<ITestSuiteBase> suites = tfsapi.GetSuites();
-            foreach(ITestSuiteBase suite in suites){
-                _builder.Append(suite);
-            }
-            // create file for output
+        
+        public XmlFileWriter(string output, ConnectionData con, ITfsCliBuilder builder) : base(output, con, builder){}
+               
+        private void WriteToOutput(){
             StreamWriter output;
             try
             {

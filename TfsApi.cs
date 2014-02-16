@@ -109,7 +109,7 @@ namespace tfs_cli
                 result.Owner = _tfs.AuthorizedIdentity;
                 result.RunBy = _tfs.AuthorizedIdentity;
                 result.DateStarted = DateTime.Now;
-                result.Duration = new TimeSpan(10000000 * (int.Parse(duration)));
+                result.Duration = new TimeSpan(10000 * (int.Parse(duration)));
                 result.DateCompleted = DateTime.Now.AddTicks(result.Duration.Ticks);
                 result.FailureType = (FailureType)Enum.Parse(typeof(FailureType), failure_type);
                 result.ErrorMessage = error_message;
@@ -199,7 +199,7 @@ namespace tfs_cli
                 iteration.Outcome = (TestOutcome)Enum.Parse(typeof(TestOutcome), outcome);
                 iteration.DateStarted = DateTime.Now;
                 iteration.DateCompleted = DateTime.Now;
-                iteration.Duration = new TimeSpan(10000000 * (int.Parse(duration)));
+                iteration.Duration = new TimeSpan(10000 * (int.Parse(duration)));
                 iteration.Comment = comment;
                 if (attach != null)
                     iteration.Attachments.Add(iteration.CreateAttachment(attach));

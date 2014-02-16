@@ -22,7 +22,7 @@ namespace tfs_cli
                 // parsing
                 string suite = testcase.Attribute("classname").Value;
                 string test = testcase.Attribute("name").Value;
-                string duration = testcase.Attribute("time").Value;
+                string duration = Math.Floor((float.Parse(testcase.Attribute("time").Value)*1000)).ToString();
                 bool failed = (testcase.Descendants("failure").Count() > 0);
                 string failure_message = "";
                 string outcome = (failed) ? "Failed" : "Passed";
@@ -36,6 +36,7 @@ namespace tfs_cli
                 {
                     run = new RunResultProvider(suite, "Autotest", "0", run_comment, report, suite);
                     _runs[run] = new List<ITestResultProvider>();
+                    _runs[run].Add(new TestResultProvider(test, outcome, suite, comment, null, "Unknown", failure_message, duration));
                 }
                 else
                 {
@@ -50,8 +51,8 @@ namespace tfs_cli
         }
 
         public IList<ITestResultProvider> GetTestResults(IRunResultProvider run)
-        {
-            return _runs[run];
+        {         
+            return _runs[run];            
         }
 
         private IRunResultProvider findRun(string name){
