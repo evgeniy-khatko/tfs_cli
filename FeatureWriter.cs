@@ -8,14 +8,20 @@ using System.Threading.Tasks;
 namespace tfs_cli
 {
     class FeatureWriter : TestsWriter
-    {        
-        private ITfsCliBuilder _builder;
-        private ConnectionData _conData;
+    {       
+        public FeatureWriter(string output, ConnectionData con, ITfsCliBuilder builder) : base(output, con, builder){}
 
-        public FeatureWriter(string output, ConnectionData con, ITfsCliBuilder builder) : base(output, con, builder){
-            Directory.CreateDirectory(output);
-        }
-
-        private void WriteToOutput(){}    
+        protected override void WriteToOutput()
+        {
+            try
+            {
+                foreach (var file in Directory.GetFiles(((FeatureBuilder)_builder).GetFeatureFilesPath()))
+                    File.Copy(file, Path.Combine(_output, Path.GetFileName(file)));
+            }
+            catch (IOException e)
+            {
+                TfsCliHelper.ExitWithError(string.Format("Could not create feature files: {0}", e.Message));
+            }
+        }    
     }
 }

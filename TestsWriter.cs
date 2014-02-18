@@ -6,9 +6,9 @@ namespace tfs_cli
 {
     abstract class TestsWriter
     {
-        private string _output;
-        private ITfsCliBuilder _builder;
-        private ConnectionData _conData;
+        protected string _output;
+        protected ITfsCliBuilder _builder;
+        protected ConnectionData _conData;
 
         public TestsWriter(string output, ConnectionData con, ITfsCliBuilder builder) 
         {

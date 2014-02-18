@@ -50,7 +50,7 @@ namespace tfs_cli
             xmltest.Add(
                 new XAttribute("id", test.Id),
                 new XAttribute("title", test.Title),
-                new XAttribute("description", fromHtml(test.Description) ?? ""),
+                new XAttribute("description", TfsCliHelper.fromHtml(test.Description) ?? ""),
                 new XAttribute("state", test.State),
                 new XAttribute("priority", test.Priority),
                 new XAttribute("owner", test.OwnerName),
@@ -65,8 +65,8 @@ namespace tfs_cli
                 
                 a.Add(
                     new XAttribute("id", action.Id),
-                    new XAttribute("action", fromHtml(step.Title)),
-                    new XAttribute("expected_result", fromHtml(step.ExpectedResult))
+                    new XAttribute("action", TfsCliHelper.fromHtml(step.Title)),
+                    new XAttribute("expected_result", TfsCliHelper.fromHtml(step.ExpectedResult))
                     );
                 xmltest.Add(a);
             }
@@ -79,12 +79,6 @@ namespace tfs_cli
             */
             // add this staff to root
             root.Add(xmltest);
-        }
-
-        private string fromHtml(string htmlText){
-            htmlText = htmlText.Replace("</P><P>", Environment.NewLine);
-            htmlText = System.Text.RegularExpressions.Regex.Replace(htmlText, @"(?></?\w+)(?>(?:[^>'""]+|'[^']*'|""[^""]*"")*)>", String.Empty);
-            return htmlText;
-        }
+        }        
     }
 }
