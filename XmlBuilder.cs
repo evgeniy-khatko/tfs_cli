@@ -20,6 +20,7 @@ namespace tfs_cli
 
         public void Append(ITestSuiteBase suite)
         {
+            TfsCliHelper.Debug(string.Format("AddSuite: \"{0}\"", suite.Title));
             XElement xmlsuite = new XElement("testsuite");
             xmlsuite.Add(
                 new XAttribute("id", suite.Id),
@@ -46,6 +47,7 @@ namespace tfs_cli
 
         private void Append(ITestCase test, XElement root)
         {
+            TfsCliHelper.Debug(string.Format("AddTest: \"{0}\"", test.Title));
             XElement xmltest = new XElement("test");
             xmltest.Add(
                 new XAttribute("id", test.Id),
@@ -62,7 +64,7 @@ namespace tfs_cli
             {
                 XElement a = new XElement("action");
                 ITestStep step = (ITestStep)action;
-                
+                TfsCliHelper.Debug(string.Format("AddAction: \"{0}\"-\"{1}\"", TfsCliHelper.fromHtml(step.Title), TfsCliHelper.fromHtml(step.ExpectedResult)));   
                 a.Add(
                     new XAttribute("id", action.Id),
                     new XAttribute("action", TfsCliHelper.fromHtml(step.Title)),

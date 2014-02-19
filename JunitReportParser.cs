@@ -13,12 +13,14 @@ namespace tfs_cli
         private Dictionary<IRunResultProvider, List<ITestResultProvider>> _runs = new Dictionary<IRunResultProvider, List<ITestResultProvider>>();
         public JunitReportParser(string report)
         {
+            TfsCliHelper.Debug(string.Format("JunitParseFile: \"{0}\"", report));
             _doc = XDocument.Load(report);
             XElement ts = _doc.Root.Element("testsuite");
             string run_comment = String.Concat(ts.Attributes());
             var testcases = _doc.Root.Element("testsuite").Elements("testcase");
             foreach (var testcase in testcases)
             {
+                TfsCliHelper.Debug(string.Format("JunitParseTest: \"{0}\"", testcase.Name));
                 // parsing
                 string suite = testcase.Attribute("classname").Value;
                 string test = testcase.Attribute("name").Value;

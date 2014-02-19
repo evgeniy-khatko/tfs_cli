@@ -3,16 +3,16 @@
             writer.CreateOutput();        }
 
         [Verb(Aliases = "features",
-            Description = "Exports TFS tests from provided project and testplan to Cucumber features. Please fill config file beforehand\nExample usage: tfs_cli get"
+            Description = "Exports TFS tests from provided project and testplan to Cucumber features. Please fill config file beforehand\nExample usage: tfs_cli features"
             )]
         static void get_features(
-            [DefaultValue("features"), DescriptionAttribute("Folder for features export")]            string output,
+            [RequiredAttribute, DescriptionAttribute("Folder for features export")]            [DirectoryExists]            string output,
             [AliasesAttribute("tp"), DefaultValue(""), DescriptionAttribute("Testplan to get tests from (overrides .config option)")]            string testplan
             )
         {
             if (testplan != "")
-                _conData.setTestPlan(testplan);            
-            FeatureWriter writer = new FeatureWriter(output, _conData, new FeatureBuilder());
+                _conData.setTestPlan(testplan);
+            TestsWriter writer = new FeatureWriter(output, _conData, new FeatureBuilder());
             writer.CreateOutput();
         }        [Verb(Aliases = "upd", Description = "Updates TFS test with provided values. Please fill config file beforehand\nExample usage: tfs_cli.exe u /rt=\"my test run\" /ts=\"testsuite\" /tn=\"test name\" /to=Passed /duration=1")]        static void update_test(            [AliasesAttribute("rconf"), DescriptionAttribute("Run configuration"), DefaultValue("tfs_cli")]            string run_config,                        [AliasesAttribute("rt"), RequiredAttribute, DescriptionAttribute("Run title")]            string run_title,            [AliasesAttribute("rb"), DescriptionAttribute("Run build number"), DefaultValue("0")]            string run_build_number,            [AliasesAttribute("rc"), DescriptionAttribute("Run comment"), DefaultValue("tfs_cli run")]            string run_comment,            [AliasesAttribute("ra"), DescriptionAttribute("Run attachment. E.g. overall run report")]            [FileExists]            string run_attachment,            [AliasesAttribute("ts"), DescriptionAttribute("Test suite name")]            string test_suite_name,            [RequiredAttribute, AliasesAttribute("tn"), DescriptionAttribute("Test name")]            string test_name,            [RequiredAttribute, AliasesAttribute("to"), DescriptionAttribute("Test outcome (result). Available: Aborted, Blocked, Error, Failed, Inconclusive, None, NotApplicable, NotExecuted, Passed, Paused, Timeout, Unspecified, Warning")]            string test_outcome,                        [AliasesAttribute("tc"), DescriptionAttribute("Test comment"), DefaultValue("tfs_cli test run")]            string test_comment,
             [AliasesAttribute("td"), RequiredAttribute, DescriptionAttribute("Test duration (ms)")]            string duration,            [AliasesAttribute("tft"), DescriptionAttribute("Test failure type. Available: KnowIssue, NewIssue, None, Regression, Unknown"), DefaultValue("None")]            string test_failure_type,            [AliasesAttribute("tem"), DescriptionAttribute("Test error message"), DefaultValue("")]            string test_error_message,            [AliasesAttribute("ta"), DescriptionAttribute("Test attachment. E.g. test run report")]            [FileExists]            string test_attachment,            [AliasesAttribute("tp"), DefaultValue(""), DescriptionAttribute("Testplan to get tests from (overrides .config option)")]            string testplan            )        {

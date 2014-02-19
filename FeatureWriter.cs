@@ -13,14 +13,17 @@ namespace tfs_cli
 
         protected override void WriteToOutput()
         {
+            string from = ((FeatureBuilder)_builder).GetFeatureFilesPath();
             try
             {
-                foreach (var file in Directory.GetFiles(((FeatureBuilder)_builder).GetFeatureFilesPath()))
-                    File.Copy(file, Path.Combine(_output, Path.GetFileName(file)));
+                TfsCliHelper.Debug(string.Format("CopyFeaturesTo: \"{0}\"", _output));
+                foreach (var file in Directory.GetFiles(from))
+                    File.Copy(file, Path.Combine(_output, Path.GetFileName(file)), true);
+                //Directory.Delete(from, true);
             }
             catch (IOException e)
             {
-                TfsCliHelper.ExitWithError(string.Format("Could not create feature files: {0}", e.Message));
+                TfsCliHelper.ExitWithError(string.Format("Could not copy feature files from {0} to {1}.\nError: {2}", from, _output, e.Message.ToString()));
             }
         }    
     }

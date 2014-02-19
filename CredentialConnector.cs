@@ -28,6 +28,7 @@ namespace tfs_cli
              
                 _tfs = new TfsTeamProjectCollection(new Uri(_connData.Url()), cred);
                 _tfs.Authenticate();
+                TfsCliHelper.Debug(string.Format("Connection: \"{0}\" \"{1}\"", _tfs.Name, _tfs.Uri));
                 if (!_tfs.HasAuthenticated)
                 {
                     TfsCliHelper.ExitWithError("Could not authenticate to TFS");

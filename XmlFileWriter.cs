@@ -1,4 +1,5 @@
 ﻿using System;using System.Collections.Generic;using System.IO;namespace tfs_cli{    class XmlFileWriter : TestsWriter    {                public XmlFileWriter(string output, ConnectionData con, ITfsCliBuilder builder) : base(output, con, builder){}
 
         protected override void WriteToOutput()
-        {            StreamWriter output;            try            {                output = new StreamWriter(_output);                output.Write(_builder.Finalize());                output.Close();            }            catch (Exception)            {                TfsCliHelper.ExitWithError(string.Format("Unable to write results to file: {0}", _output));            }        }            }}
+        {            StreamWriter output;            try            {
+                TfsCliHelper.Debug(string.Format("WriteXML: \"{0}\"", _output));                output = new StreamWriter(_output);                output.Write(_builder.Finalize());                output.Close();            }            catch (Exception)            {                TfsCliHelper.ExitWithError(string.Format("Unable to write results to file: {0}", _output));            }        }            }}
