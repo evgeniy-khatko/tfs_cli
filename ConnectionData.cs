@@ -14,6 +14,9 @@ namespace tfs_cli
         private string _login;
         private string _pwd;
         private string _domen;
+        private string _proxy_login;
+        private string _proxy_password;
+        private string _proxy_domain;
 
         public ConnectionData
             (
@@ -22,7 +25,10 @@ namespace tfs_cli
             string testplan,
             string login,
             string pwd,
-            string domen
+            string domen,
+            string proxy_login,
+            string proxy_password,
+            string proxy_domain
             )
         {
             _url = url;
@@ -31,6 +37,9 @@ namespace tfs_cli
             _login = login;
             _pwd = pwd;
             _domen = domen;
+            _proxy_login = proxy_login;
+            _proxy_password = proxy_password;
+            _proxy_domain = proxy_domain;
         }
 
         public void setTestPlan(string newtp) {
@@ -43,5 +52,8 @@ namespace tfs_cli
         public string User() { return _login; }
         public string Password() { return _pwd; }
         public string Domen() { return _domen; }
+        public string ProxyLogin() { return _proxy_login; }
+        public string ProxyPassword() { return _proxy_password; }
+        public string ProxyDomain() { return _proxy_domain; }
     }
 }
