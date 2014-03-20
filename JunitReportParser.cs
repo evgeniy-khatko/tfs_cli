@@ -24,7 +24,7 @@ namespace tfs_cli
                 // parsing
                 string suite = testcase.Attribute("classname").Value;
                 string test = testcase.Attribute("name").Value;
-                string duration = Math.Floor((float.Parse(testcase.Attribute("time").Value)*1000)).ToString();
+                string duration =(1000*(Math.Floor(double.Parse(testcase.Attribute("time").Value)))).ToString();
                 bool failed = (testcase.Descendants("failure").Count() > 0);
                 string failure_message = "";
                 string outcome = (failed) ? "Failed" : "Passed";
