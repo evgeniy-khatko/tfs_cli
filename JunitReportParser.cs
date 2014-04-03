@@ -11,20 +11,24 @@ namespace tfs_cli
     {
         private XDocument _doc;
         private Dictionary<IRunResultProvider, List<ITestResultProvider>> _runs = new Dictionary<IRunResultProvider, List<ITestResultProvider>>();
-        public JunitReportParser(string report)
+        public JunitReportParser(string report, string attach)
         {
             TfsCliHelper.Debug(string.Format("JunitParseFile: \"{0}\"", report));
             _doc = XDocument.Load(report);
-            XElement ts = _doc.Root.Element("testsuite");
+            XElement ts = _doc.Element("testsuite");
+            //XElement root = _doc.Element("testsuite");
+            //XElement testsuite = root.Element("testsuite");
+            if (ts == null)
+                throw new Exception("Could not parse " + report);
             string run_comment = String.Concat(ts.Attributes());
-            var testcases = _doc.Root.Element("testsuite").Elements("testcase");
+            var testcases = ts.Elements("testcase");
             foreach (var testcase in testcases)
             {
                 TfsCliHelper.Debug(string.Format("JunitParseTest: \"{0}\"", testcase.Name));
                 // parsing
                 string suite = testcase.Attribute("classname").Value;
                 string test = testcase.Attribute("name").Value;
-                string duration =(1000*(Math.Floor(double.Parse(testcase.Attribute("time").Value)))).ToString();
+                string duration =(1000*(Math.Floor(double.Parse(testcase.Attribute("time").Value.Replace('.',','))))).ToString();
                 bool failed = (testcase.Descendants("failure").Count() > 0);
                 string failure_message = "";
                 string outcome = (failed) ? "Failed" : "Passed";
@@ -36,7 +40,7 @@ namespace tfs_cli
                 IRunResultProvider run = findRun(suite);
                 if (run == null)
                 {
-                    run = new RunResultProvider(suite, "Autotest", "0", run_comment, report, suite);
+                    run = new RunResultProvider(suite, "Autotest", "0", run_comment, attach, suite);
                     _runs[run] = new List<ITestResultProvider>();
                     _runs[run].Add(new TestResultProvider(test, outcome, suite, comment, null, "Unknown", failure_message, duration));
                 }

@@ -19,7 +19,7 @@ namespace tfs_cli
                 TfsCliHelper.Debug(string.Format("CopyFeaturesTo: \"{0}\"", _output));
                 foreach (var file in Directory.GetFiles(from))
                     File.Copy(file, Path.Combine(_output, Path.GetFileName(file)), true);
-                //Directory.Delete(from, true);
+                Directory.Delete(from, true);
             }
             catch (IOException e)
             {

@@ -42,12 +42,13 @@
         static void junit_update(
             [AliasesAttribute("r"), DescriptionAttribute("Junit report file"), RequiredAttribute]            [FileExists]
             string junit_report,
-            [AliasesAttribute("tp"), DefaultValue(""), DescriptionAttribute("Testplan to get tests from (overrides .config option)")]            string testplan
+            [AliasesAttribute("tp"), DefaultValue(""), DescriptionAttribute("Testplan to get tests from (overrides .config option)")]            string testplan,
+            [AliasesAttribute("ra"), DescriptionAttribute("Run attachment. E.g. overall run report")]            [FileExists]            string run_attachment
             )
         {
             if (testplan != "")
                 _conData.setTestPlan(testplan);
-            JunitReportParser jrp = new JunitReportParser(junit_report);
+            JunitReportParser jrp = new JunitReportParser(junit_report, run_attachment);
             IList<IRunResultProvider> RunResults = jrp.GetRunResults();
             foreach (IRunResultProvider run in RunResults)
             {
