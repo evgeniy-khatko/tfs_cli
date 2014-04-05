@@ -16,8 +16,7 @@ namespace tfs_cli
             TfsCliHelper.Debug(string.Format("JunitParseFile: \"{0}\"", report));
             _doc = XDocument.Load(report);
             XElement ts = _doc.Element("testsuite");
-            //XElement root = _doc.Element("testsuite");
-            //XElement testsuite = root.Element("testsuite");
+            
             if (ts == null)
                 throw new Exception("Could not parse " + report);
             string run_comment = String.Concat(ts.Attributes());
@@ -28,7 +27,7 @@ namespace tfs_cli
                 // parsing
                 string suite = testcase.Attribute("classname").Value;
                 string test = testcase.Attribute("name").Value;
-                string duration =(1000*(Math.Floor(double.Parse(testcase.Attribute("time").Value.Replace('.',','))))).ToString();
+                string duration = testcase.Attribute("time").Value.Split('.').First();
                 bool failed = (testcase.Descendants("failure").Count() > 0);
                 string failure_message = "";
                 string outcome = (failed) ? "Failed" : "Passed";

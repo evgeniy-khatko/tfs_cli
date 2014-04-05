@@ -109,7 +109,7 @@ namespace tfs_cli
                 result.Owner = _tfs.AuthorizedIdentity;
                 result.RunBy = _tfs.AuthorizedIdentity;
                 result.DateStarted = DateTime.Now;
-                result.Duration = new TimeSpan(10000 * (int.Parse(duration)));
+                result.Duration = new TimeSpan(10000000000 * (long.Parse(duration)));
                 result.DateCompleted = DateTime.Now.AddTicks(result.Duration.Ticks);
                 result.FailureType = (FailureType)Enum.Parse(typeof(FailureType), failure_type);
                 result.ErrorMessage = error_message;
@@ -122,9 +122,10 @@ namespace tfs_cli
             {
                 TfsCliHelper.ExitWithError("Provided parameters are incorrect (e.g. duration is in wrong format)");
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                TfsCliHelper.ExitWithError("Error occured while creating test result");
+                TfsCliHelper.Debug(e.StackTrace);
+                TfsCliHelper.ExitWithError("Error occured while creating test result: " + e.Message);
             }
         }
 
