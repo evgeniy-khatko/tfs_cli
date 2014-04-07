@@ -56,4 +56,4 @@
                 TfsCliUpdater updater = new TfsCliUpdater(run, results, _conData);
                 updater.UpdateResults();
             }            
-        }        [Verb(Aliases = "enc", Description = "Encrypts provided string to be used in App.config\nUsage: tfs_cli enc <password>")]        static void encrypt(            [RequiredAttribute, DescriptionAttribute("Password to be encrypted")]            string password            )        {            System.Console.WriteLine(StringEncriptor.Encrypt(password));            System.Environment.Exit(0);        }    }}
+        }        [Verb(Aliases = "enc", Description = "Encrypts provided string to be used in App.config\nUsage: tfs_cli enc /p=<password>")]        static void encrypt(            [RequiredAttribute, DescriptionAttribute("Password to be encrypted")]            string password            )        {            System.Console.WriteLine(StringEncriptor.Encrypt(password));            System.Environment.Exit(0);        }    }}

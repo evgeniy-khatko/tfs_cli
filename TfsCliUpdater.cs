@@ -20,28 +20,24 @@ namespace tfs_cli
             connector.Connect();
            
             TfsApi tfsapi = new TfsApi(connector.Collection(), _conData);
-            
+            Microsoft.TeamFoundation.TestManagement.Client.ITestRun run = tfsapi.CreateRun(
+                        tfsapi.GetSuite(_runRes.Suite()),
+                        _runRes.Title(), _runRes.Comment(),
+                        _runRes.BuildNumber(),
+                        _runRes.Attachment()
+                    );
             foreach (ITestResultProvider res in _results)
             {
                 tfsapi.UpdateTestResult
-                    (
-                    tfsapi.GetTestResult
-                    (
-                        tfsapi.CreateRun(
-                        tfsapi.GetSuite(_runRes.Suite()), 
-                        _runRes.Title(), _runRes.Comment(),
-                        _runRes.BuildNumber(), 
-                        _runRes.Attachment()
-                    ), 
-                    res.Title()
-                    ),
+                (
+                    tfsapi.GetTestResult(run, res.Title()),
                     res.Outcome(),
                     res.Duration(),
                     res.Comment(),
                     res.FailureType(),
                     res.ErrorMessage(),
                     res.Attachment()
-                    );
+                );
             }
         }
     }

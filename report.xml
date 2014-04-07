@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<testsuite failures="0" tests="2">
+<testcase classname="pilot" name="initial" time="0.196592">
+<system-out><![CDATA[* use profile "cca_huawei".........................................................passed
+]]></system-out>
+</testcase>
+<testcase classname="pilot" name="use_profile" time="0.019922">
+<system-out><![CDATA[* use profile "cca_huawei".........................................................passed
+]]></system-out>
+</testcase>
+</testsuite>
