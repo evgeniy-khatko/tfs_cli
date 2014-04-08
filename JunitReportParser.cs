@@ -27,10 +27,13 @@ namespace tfs_cli
                 string suite = testcase.Attribute("classname").Value;
                 string test = testcase.Attribute("name").Value;
                 string duration = testcase.Attribute("time").Value.Split('.').First();
-                bool failed = (testcase.Descendants("failure").Count() > 0);
-                string failure_message = "";
-                string outcome = (failed) ? "Failed" : "Passed";
-                if (failed)
+                string outcome = "Passed";
+                if (testcase.Descendants("failure").Count() > 0)
+                    outcome = "Failed";
+                if (testcase.Descendants("skipped").Count() > 0)
+                    outcome = "Blocked";
+                string failure_message = "";                                
+                if (outcome == "Failed")
                     failure_message = testcase.Descendants("failure").First().Attribute("message").Value;
                 string comment = testcase.Descendants().First().Value;                
                 // put to dict
