@@ -31,7 +31,7 @@ namespace tfs_cli
                 _project = test_service.GetTeamProject(_conData.Project());
                 return _project;
             }
-            catch (Exception) { TfsCliHelper.ExitWithError(string.Format("Could not get TFS project {0}", _conData.Project())); }
+            catch (Exception e) { TfsCliHelper.ExitWithError(string.Format("Could not get TFS project {0}: {1}", _conData.Project(), e.Message)); }
             return null;
         }
 

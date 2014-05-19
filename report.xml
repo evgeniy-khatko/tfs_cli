@@ -1,11 +1,33 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<testsuite failures="0" tests="2">
-<testcase classname="pilot" name="initial" time="0.196592">
+<testsuite failures="1" tests="3">
+<testcase classname="pilot" name="initial" time="9.565341">
 <system-out><![CDATA[* use profile "cca_huawei".........................................................passed
+* diameter request "initial"........................................................passed
+* validate values:.............................................................passed
+* validate log "DiameterConnector_Huawei_GGSN_GVC_02_dr":..........................................passed
 ]]></system-out>
 </testcase>
-<testcase classname="pilot" name="use_profile" time="0.019922">
+<testcase classname="pilot" name="initial - Nupdate - terminate" time="7.032862">
 <system-out><![CDATA[* use profile "cca_huawei".........................................................passed
+* diameter request "initial"........................................................passed
+* diameter request "update":........................................................passed
+* diameter request "terminate".......................................................passed
+* validate log "DiameterConnector_Huawei_GGSN_GVC_02_dr":..........................................passed
 ]]></system-out>
+</testcase>
+<testcase classname="pilot" name="initial - failing" time="0.177556">
+<failure message="java.lang.AssertionError: &#10;Expected: is &quot;2002&quot;&#10;     but: was &quot;2001&quot;&#13;&#10;&#9;at org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:20)&#13;&#10;&#9;at org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:8)&#13;&#10;&#9;at ru.at_consulting.autotest.cmd.HelpSteps.validate_value_(HelpSteps.java:37)&#13;&#10;&#9;at ✽.* validate values:(pilot.feature:28)&#13;&#10;"><![CDATA[* use profile "cca_huawei".........................................................passed
+* diameter request "initial"........................................................passed
+* validate values:.............................................................failed
+
+StackTrace:
+java.lang.AssertionError: 
+Expected: is "2002"
+     but: was "2001"
+	at org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:20)
+	at org.hamcrest.MatcherAssert.assertThat(MatcherAssert.java:8)
+	at ru.at_consulting.autotest.cmd.HelpSteps.validate_value_(HelpSteps.java:37)
+	at ✽.* validate values:(pilot.feature:28)
+]]></failure>
 </testcase>
 </testsuite>
